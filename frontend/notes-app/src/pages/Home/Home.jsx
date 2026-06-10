@@ -184,10 +184,10 @@ const Home = () => {
 
       {/* ══════════════ SIDEBAR ══════════════ */}
       <aside className={`
-        fixed lg:relative top-0 left-0 h-screen z-40 lg:z-auto
+        fixed lg:relative top-0 left-0 h-[100dvh] z-40 lg:z-auto
         flex flex-col shrink-0 transition-transform duration-300 ease-in-out
         border-r border-white/[0.06]
-        ${sidebarOpen ? "translate-x-0 w-56" : "-translate-x-full lg:translate-x-0 lg:w-0 lg:overflow-hidden"}
+        ${sidebarOpen ? "translate-x-0 w-64" : "-translate-x-full lg:translate-x-0 lg:w-0 lg:overflow-hidden"}
       `} style={{ background: "rgba(6,4,14,0.75)", backdropFilter: "blur(40px)", WebkitBackdropFilter: "blur(40px)" }}>
 
         {/* Brand */}
@@ -202,7 +202,8 @@ const Home = () => {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto overscroll-contain px-3 py-4 space-y-0.5"
+          style={{ WebkitOverflowScrolling: 'touch' }}>
           {[
             { label: "All Notes", cat: "All",      icon: <MdOutlineNotes /> },
             { label: "Pinned",    cat: "pinned",   icon: <MdPushPin /> },
@@ -295,7 +296,7 @@ const Home = () => {
 
           {/* Profile */}
           <div className="flex items-center gap-2 ml-auto shrink-0">
-            <div className="hidden sm:block text-right">
+            <div className="hidden lg:block text-right">
               <p className="text-xs font-medium text-zinc-300 leading-none tracking-wide">{userInfo?.fullName || "User"}</p>
             </div>
             <div className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center text-white text-xs font-semibold shrink-0 shadow-md shadow-violet-900/40">
