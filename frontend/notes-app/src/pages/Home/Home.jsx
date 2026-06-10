@@ -295,14 +295,22 @@ const Home = () => {
           </select>
 
           {/* Profile */}
-          <div className="flex items-center gap-2 ml-auto shrink-0">
-            <div className="hidden lg:block text-right">
-              <p className="text-xs font-medium text-zinc-300 leading-none tracking-wide">{userInfo?.fullName || "User"}</p>
-            </div>
-            <div className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center text-white text-xs font-semibold shrink-0 shadow-md shadow-violet-900/40">
-              {userInfo?.fullName ? getInitials(userInfo.fullName) : "U"}
-            </div>
-          </div>
+          {(() => {
+            const cleanName = userInfo?.fullName
+              ?.split(" ")
+              .filter(w => w && w.toLowerCase() !== "undefined")
+              .join(" ") || null;
+            return (
+              <div className="flex items-center gap-2 ml-auto shrink-0">
+                <div className="hidden lg:block text-right">
+                  <p className="text-xs font-medium text-zinc-300 leading-none tracking-wide">{cleanName || "User"}</p>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center text-white text-xs font-semibold shrink-0 shadow-md shadow-violet-900/40">
+                  {cleanName ? getInitials(cleanName) : "U"}
+                </div>
+              </div>
+            );
+          })()}
         </header>
 
         {/* ── Content ── */}
