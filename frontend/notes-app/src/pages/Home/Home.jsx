@@ -44,7 +44,10 @@ const Home = () => {
   const [search, setSearch]           = useState("");
   const [category, setCategory]       = useState("All");
   const [sort, setSort]               = useState("newest");
-  const [aiSummary, setAiSummary]     = useState({ noteId: null, text: "" });
+  const [aiSummary, setAiSummary]     = useState(() => {
+    try { const s = sessionStorage.getItem("aiSummary"); return s ? JSON.parse(s) : { noteId: null, text: "" }; }
+    catch { return { noteId: null, text: "" }; }
+  });
   const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const searchRef = useRef(null);
@@ -123,7 +126,14 @@ const Home = () => {
   };
   const handleSummarize = async (id, content) => {
     showToast("Generating summary…", "success");
-    try { const { data } = await axiosInstance.post("/ai/summarize", { content }); if (!data.error) setAiSummary({ noteId: id, text: data.summary }); }
+    try {
+      const { data } = await axiosInstance.post("/ai/summarize", { content });
+      if (!data.error) {
+        const val = { noteId: id, text: data.summary };
+        setAiSummary(val);
+        try { sessionStorage.setItem("aiSummary", JSON.stringify(val)); } catch {}
+      }
+    }
     catch { showToast("AI unavailable — add GROQ_API_KEY to .env", "error"); }
   };
   const handleMood = async (id, content) => {
@@ -157,7 +167,7 @@ const Home = () => {
             <div className="mt-2 p-3 bg-violet-500/10 border border-violet-500/25 backdrop-blur-sm rounded-xl text-sm text-violet-200">
               <div className="flex justify-between items-center mb-1">
                 <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">✨ AI Summary</span>
-                <button onClick={() => setAiSummary({ noteId: null, text: "" })} className="text-zinc-500 hover:text-white"><MdClose /></button>
+                <button onClick={() => { setAiSummary({ noteId: null, text: "" }); sessionStorage.removeItem("aiSummary"); }} className="text-zinc-500 hover:text-white"><MdClose /></button>
               </div>
               {aiSummary.text}
             </div>
@@ -302,8 +312,8 @@ const Home = () => {
               .join(" ") || null;
             return (
               <div className="flex items-center gap-2 ml-auto shrink-0">
-                <div className="hidden lg:block text-right">
-                  <p className="text-xs font-medium text-zinc-300 leading-none tracking-wide">{cleanName || "User"}</p>
+                <div className="hidden lg:block text-right max-w-[140px]">
+                  <p className="text-xs font-medium text-zinc-300 leading-none tracking-wide truncate">{cleanName || "User"}</p>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center text-white text-xs font-semibold shrink-0 shadow-md shadow-violet-900/40">
                   {cleanName ? getInitials(cleanName) : "U"}
