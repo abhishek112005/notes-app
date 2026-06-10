@@ -22,9 +22,7 @@ const {
 } = require("./utilities");
 
 // ─── DB ──────────────────────────────────────────────────────────────────────
-const DB_URI =
-    process.env.CONNECTION_STRING ||
-    "mongodb+srv://testuser:testuser123@notesapp.symsp.mongodb.net/?retryWrites=true&w=majority&appName=notesapp";
+const DB_URI = process.env.CONNECTION_STRING;
 
 mongoose
     .connect(DB_URI, { serverSelectionTimeoutMS: 30000, socketTimeoutMS: 45000 })
